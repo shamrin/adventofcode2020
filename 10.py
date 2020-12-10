@@ -32,3 +32,16 @@ for d in ds:
             print('oops', ones)
         ones = 0
 print(c)
+
+# part 2, memoization solution
+# inspired by https://github.com/vincentvanderweele/adventofcode-2020/blob/main/day10.js
+cache = {}
+def count(prev, I):
+    if len(I) == 1 and I[0] - prev <= 3:
+        return 1
+    if I[0] - prev > 3:
+        return 0
+    if (prev, len(I)) not in cache:
+        cache[prev, len(I)] = count(prev, I[1:]) + count(I[0], I[1:])
+    return cache[prev, len(I)]
+print(count(I[0], I[1:]))
