@@ -1,3 +1,5 @@
+# inspired by https://www.reddit.com/r/adventofcode/comments/kaw6oz/2020_day_11_solutions/gfd91ts/
+
 I = ['X' + line.strip() + 'X' for line in open('input11.txt') if line]
 
 I = ['X' * len(I[0])] + I + ['X' * len(I[0])]

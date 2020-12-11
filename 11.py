@@ -1,3 +1,5 @@
+# initial solution
+
 I = [line.strip() for line in open('input11.txt') if line]
 R = len(I)
 C = len(I[0])
