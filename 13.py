@@ -7,9 +7,9 @@ ts = []
 for _, b in B:
     d, r = divmod(T, b)
     assert r > 0, 'oops'
-    ts.append((b, (d+1) * b - T))
+    ts.append((b, (d + 1) * b))
 b, t = min(ts, key=lambda t: t[1])
-print(b*t)
+print(b * (t - T))
 
 # part 2
 from functools import reduce
@@ -24,5 +24,5 @@ def solve(B, t, step):
 
 t = 1
 for i in range(1, len(B)+1):
-    t = solve(B[:i], t, prod([b for _, b in B[:i-1]]))
+    t = solve(B[:i], t, prod(b for _, b in B[:i-1]))
 print(t)
