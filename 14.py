@@ -55,15 +55,16 @@ mask = None
 mem = {}
 for cmd, data in I:
     if cmd == 'mask':
-        mask = data
+        mask = ''.join(reversed(data))
     elif cmd == 'mem':
         addr, r = data
         assert mask is not None
-        x_indices = [i for i, b in enumerate(reversed(mask)) if b == 'X']
+        x_indices = [i for i, b in enumerate(mask) if b == 'X']
         for n in range(mask.count('X') + 1):
             for indices in combinations(x_indices, n):
-                a = bits(addr | int(''.join(mask).replace('X', '0'), 2), 36)
-                for i in x_indices:
-                    a[i] = '1' if i in indices else '0'
+                a = [
+                    b if m == '0' else '1' if m == '1' or i in indices else '0'
+                    for i, (b, m) in enumerate(zip(bits(addr, 36), mask))
+                ]
                 mem[int(''.join(reversed(a)), 2)] = r
 print(sum(m for m in mem.values()))
