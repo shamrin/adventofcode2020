@@ -9,14 +9,12 @@ mem = {}
 for line in I:
     if line.startswith('mask = '):
         mask = line[7:]
-        mask_or = int(''.join('1' if m == '1' else '0' for m in mask), 2)
-        mask_and = int(''.join('0' if m == '0' else '1' for m in mask), 2)
     else:
         m = re.match(r'mem\[(\d+)\] = (\d+)', line)
         assert m
         r = int(m[2])
-        r |= mask_or
-        r &= mask_and
+        r &= int(mask.replace('X', '1'), 2) # set 0s
+        r |= int(mask.replace('X', '0'), 2) # set 1s
         mem[int(m[1])] = r 
 
 print(sum(m for m in mem.values()))
