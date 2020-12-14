@@ -1,37 +1,42 @@
 import re
-I = [l.strip() for l in open('input14.txt') if l]
+
+inp = [l.strip() for l in open('input14.txt') if l]
+I = []
+for line in inp:
+    if line.startswith('mask = '):
+        I.append(('mask', line[7:]))
+    else:
+        m = re.match(r'mem\[(\d+)\] = (\d+)', line)
+        assert m
+        I.append(('mem', (int(m[1]), int(m[2]))))
 
 # part 1
 mask_or = 0
 mask = ''
 mask_and = int('1'*36,2)
 mem = {}
-for line in I:
-    if line.startswith('mask = '):
-        mask = line[7:]
-    else:
-        m = re.match(r'mem\[(\d+)\] = (\d+)', line)
-        assert m
-        r = int(m[2])
+for cmd, data in I:
+    if cmd == 'mask':
+        mask = data
+    elif cmd == 'mem':
+        addr, r = data
         r &= int(mask.replace('X', '1'), 2) # set 0s
         r |= int(mask.replace('X', '0'), 2) # set 1s
-        mem[int(m[1])] = r 
-
+        mem[addr] = r
 print(sum(m for m in mem.values()))
 
-# part 2
+
 def bits(n, l):
     return list(reversed(bin(n)[2:].zfill(l)))
 
+# part 2, initial solution
 mask = None
 mem = {}
-for line in I:
-    if line.startswith('mask = '):
-        mask = ''.join(reversed(line[7:]))
-    else:
-        m = re.match(r'mem\[(\d+)\] = (\d+)', line)
-        assert m
-        addr, r = int(m[1]), int(m[2])
+for cmd, data in I:
+    if cmd == 'mask':
+        mask = ''.join(reversed(data))
+    elif cmd == 'mem':
+        addr, r = data
         assert mask is not None
         for count in range(2 ** mask.count('X')):
             a = bits(addr, 36)
@@ -42,5 +47,23 @@ for line in I:
                 elif m == 'X':
                     a[i] = c[mask.count('X', 0, i)]
             mem[int(''.join(reversed(a)), 2)] = r
+print(sum(m for m in mem.values()))
 
+# part 2, alternative solution
+from itertools import combinations
+mask = None
+mem = {}
+for cmd, data in I:
+    if cmd == 'mask':
+        mask = data
+    elif cmd == 'mem':
+        addr, r = data
+        assert mask is not None
+        x_indices = [i for i, b in enumerate(reversed(mask)) if b == 'X']
+        for n in range(mask.count('X') + 1):
+            for indices in combinations(x_indices, n):
+                a = bits(addr | int(''.join(mask).replace('X', '0'), 2), 36)
+                for i in x_indices:
+                    a[i] = '1' if i in indices else '0'
+                mem[int(''.join(reversed(a)), 2)] = r
 print(sum(m for m in mem.values()))
