@@ -40,7 +40,7 @@ for line in I:
                 if m == '1':
                     a[i] = '1'
                 elif m == 'X':
-                    a[i] = c[mask[:i].count('X')]
+                    a[i] = c[mask.count('X', 0, i)]
             mem[int(''.join(reversed(a)), 2)] = r
 
 print(sum(m for m in mem.values()))
