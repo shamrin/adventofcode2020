@@ -4,9 +4,8 @@ inputs = [
 ]
 
 def solve(ns, steps):
-    c = {n: i for i, n in enumerate(ns)}
-    last = ns[-1]
-    for n in range(len(ns) - 1, steps - 1):
+    last, c = ns[-1], {n:i+1 for i, n in enumerate(ns)}
+    for n in range(len(ns), steps):
         c[last], last = n, n - c.get(last, n)
     return last
 
