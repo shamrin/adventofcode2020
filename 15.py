@@ -7,9 +7,7 @@ def solve(ns, steps):
     c = {n: i for i, n in enumerate(ns)}
     last = ns[-1]
     for n in range(len(ns) - 1, steps - 1):
-        next = n - c.get(last, n)
-        c[last] = n
-        last = next
+        c[last], last = n, n - c.get(last, n)
     return last
 
 for inp in inputs:
