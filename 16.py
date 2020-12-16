@@ -27,13 +27,12 @@ for ticket in tickets:
     for i, t in enumerate(ticket):
         candidates[i] &= set(name for name, ranges in specs if valid(t, ranges))
 
-while any(len(s) > 1 for s in candidates):
-    for cs in [set(cs) for cs in candidates]:
-        if len(cs) == 1:
-            c = next(iter(cs))
-            for i in range(len(candidates)):
-                if len(candidates[i]) > 1:
-                    candidates[i].discard(c)
+while any(len(cs) > 1 for cs in candidates):
+    for i in range(len(candidates)):
+        if len(candidates[i]) == 1:
+            for j in range(len(candidates)):
+                if len(candidates[j]) > 1 and i != j:
+                    candidates[j] -= candidates[i]
 candidates = [c.pop() for c in candidates]
 
 from functools import reduce
