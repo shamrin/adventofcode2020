@@ -28,11 +28,10 @@ for ticket in tickets:
         candidates[i] &= set(name for name, ranges in specs if valid(v, ranges))
 
 while any(len(cs) > 1 for cs in candidates):
-    for i in range(len(candidates)):
-        if len(candidates[i]) == 1:
-            for j in range(len(candidates)):
-                if len(candidates[j]) > 1 and i != j:
-                    candidates[j] -= candidates[i]
+    for c in (next(iter(cs)) for cs in candidates if len(cs) == 1):
+        for cs in candidates:
+            if len(cs) > 1:
+                cs.discard(c)
 candidates = [c.pop() for c in candidates]
 
 from functools import reduce
