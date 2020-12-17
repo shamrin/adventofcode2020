@@ -19,7 +19,7 @@ def solve(ds):
                 g[x,y,0,0] = '#'
 
     from collections import defaultdict
-    for i in range(6):
+    for _ in range(6):
         ng = {}
         ns = defaultdict(lambda: 0)
         for (x, y, z, w), c in g.items():
