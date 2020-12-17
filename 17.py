@@ -33,7 +33,7 @@ def solve(ds):
                 ng[x,y,z,w] = '#'
         g = ng
 
-    return sum(1 for _ in g.values())
+    return len(g)
 
 D = (-1,0,1)
 # part 1
