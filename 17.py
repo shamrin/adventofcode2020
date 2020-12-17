@@ -1,7 +1,7 @@
 from collections import Counter
 from itertools import product
 
-inp='''
+I='''
 ...#..#.
 #..#...#
 .....###
@@ -12,7 +12,7 @@ inp='''
 ##...#..
 '''.strip()
 
-g = {(x,y,0,0):'#' for y, row in enumerate(inp.split('\n')) for x, c in enumerate(row) if c == '#'}
+g = {(x,y,0,0):'#' for y, r in enumerate(I.split('\n')) for x, c in enumerate(r) if c == '#'}
 D = (-1,0,1)
 def add(v1, v2): return tuple(e1+e2 for e1, e2 in zip(v1,v2))
 def solve(g, Dw):
