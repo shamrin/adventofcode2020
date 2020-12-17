@@ -13,7 +13,11 @@ inp='''
 
 inp = inp.strip()
 
-def solve(ds):
+D = (-1,0,1)
+
+def solve(Dw):
+    ds = [(dx,dy,dz,dw) for dx in D for dy in D for dz in D for dw in Dw if (dx,dy,dz,dw) != (0,0,0,0)]
+
     g = {}
     for y, row in enumerate(inp.split('\n')):
         for x, c in enumerate(row):
@@ -35,8 +39,7 @@ def solve(ds):
 
     return len(g)
 
-D = (-1,0,1)
 # part 1
-print(solve([(dx,dy,dz,dw) for dx in D for dy in D for dz in D for dw in (0,) if (dx,dy,dz,dw) != (0,0,0,0)]))
+print(solve((0,)))
 # part 2
-print(solve([(dx,dy,dz,dw) for dx in D for dy in D for dz in D for dw in D if (dx,dy,dz,dw) != (0,0,0,0)]))
+print(solve(D))
