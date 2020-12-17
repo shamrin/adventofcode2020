@@ -1,3 +1,5 @@
+from collections import defaultdict
+
 inp='''
 ...#..#.
 #..#...#
@@ -18,7 +20,6 @@ def solve(ds):
             if c == '#':
                 g[x,y,0,0] = '#'
 
-    from collections import defaultdict
     for _ in range(6):
         ng = {}
         ns = defaultdict(lambda: 0)
