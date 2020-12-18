@@ -1,6 +1,14 @@
 import re
+from dataclasses import dataclass
+from typing import Optional, Union
 
 inputs = [line.replace(' ', '').strip() for line in open('input18.txt') if line]
+
+@dataclass
+class Token:
+    type: str
+    val: Optional[Union[int, str]] = None
+    prec: Optional[int] = None
 
 class peekable:
     def __init__(self, it):
@@ -29,43 +37,37 @@ def tokens(input, precedence):
     while i < len(input):
         c = input[i]
         if c in '+*':
-            yield 'op', c, precedence[c]
+            yield Token('op', c, precedence[c])
             i += 1
         elif c in '(':
-            yield f'lparen', None
+            yield Token('lparen')
             i += 1
         elif c in ')':
-            yield f'rparen', None
+            yield Token('rparen')
             i += 1
         elif m := re.match(r'\d+', input[i:]):
-            yield 'num', int(m.group())
+            yield Token('num', int(m.group()))
             i += m.end()
         else:
-            raise Exception(f'Unexpected token {input[i:]!r}')
+            raise Exception(f'unexpected token {input[i:]!r}')
 
-def atom(t):
-    tok, v = t.peek()
-    if tok == 'lparen':
-        next(t)
-        v = expr(t, 1)
-        assert t.peek()[0] == 'rparen', repr(t.peek())
-        next(t)
-    elif tok == 'num':
-        next(t)
-    else:
-        raise Exception(f'Unexpected token {t.peek()!r}')
+def atom(tok):
+    t = next(tok)
+    if t.type == 'num':
+        return t.val
+
+    assert t.type == 'lparen', f'unexpected token {t!r}'
+    v = expr(tok, 1)
+    assert next(tok).type == 'rparen'
     return v
 
-def expr(t, min_prec):
-    r = atom(t)
-    while t.peek() is not None and t.peek()[0] == 'op':
-        o, prec = t.peek()[1:]
-        if prec < min_prec:
-            break
-        next(t)
-        rhs = expr(t, prec + 1) # +1 means left-assoc
-        assert o in '+*', f'unexpected op {o!r}'
-        r = (r * rhs) if o == '*' else (r + rhs)
+def expr(tok, min_prec):
+    r = atom(tok)
+    while (t := tok.peek()) and t.type == 'op' and t.prec >= min_prec:
+        next(tok)
+        rhs = expr(tok, t.prec + 1) # +1 means left-assoc
+        assert t.val in '+*', f'unexpected op {t.val!r}'
+        r = (r * rhs) if t.val == '*' else (r + rhs)
     return r
 
 # print(expr(peekable(tokens('1 + 2 * 3 + 4 * 5 + 6', {'+': 1, '*': 1})), 1))
