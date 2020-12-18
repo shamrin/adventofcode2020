@@ -70,7 +70,5 @@ def expr(tok, min_prec):
         r = (r * rhs) if t.val == '*' else (r + rhs)
     return r
 
-# print(expr(peekable(tokens('1 + 2 * 3 + 4 * 5 + 6', {'+': 1, '*': 1})), 1))
-
 for precedence in [{'*':1,'+':1}, {'*':1,'+':2}, {'*':2,'+':1}]:
     print(sum(expr(peekable(tokens(I, precedence)), 1) for I in inputs))
